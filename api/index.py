@@ -33,7 +33,7 @@ async def get_answer(question: str = Form(...), file: UploadFile = None):
                 df = pd.read_csv(os.path.join(extracted_dir, csv_files[0]))
                 if "answer" in df.columns:
                     return {"answer": str(df["answer"].iloc[0])}
-        
+
         # If no file or not a ZIP, return default answer
         return {"answer": "This is a sample answer from the LLM."}
 

@@ -29,24 +29,16 @@ async def get_answer(question: str = Form(...), file: UploadFile = None):
 
             # Find CSV file inside extracted folder
             csv_files = [f for f in os.listdir(extracted_dir) if f.endswith(".csv")]
-            
             if csv_files:
-                csv_path = os.path.join(extracted_dir, csv_files[0])
-                df = pd.read_csv(csv_path)
-
-                # Check if "answer" column exists
-                if "answer" in df.columns and not df["answer"].empty:
+                df = pd.read_csv(os.path.join(extracted_dir, csv_files[0]))
+                if "answer" in df.columns:
                     return {"answer": str(df["answer"].iloc[0])}
-                else:
-                    raise HTTPException(status_code=400, detail="CSV file is missing the 'answer' column or is empty.")
 
-        # If no file is uploaded, return a default response
+        # If no file or not a ZIP, return default answer
         return {"answer": "This is a sample answer from the LLM."}
 
-    except zipfile.BadZipFile:
-        raise HTTPException(status_code=400, detail="Uploaded file is not a valid ZIP file.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 # ASGI handler for Vercel
-handler = Mangum(app)
+lambda_handler = Mangum(app)

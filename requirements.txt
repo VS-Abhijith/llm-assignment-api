@@ -1,4 +1,5 @@
 fastapi
-mangum
+uvicorn
 pandas
-zipfile36
+mangum
+python-multipart
